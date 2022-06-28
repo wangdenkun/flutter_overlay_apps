@@ -2,6 +2,10 @@
 
 Android plugin for displaying flutter app over other apps
 
+## 追加功能
+* 获取是否开启了悬浮权限
+* 监听悬浮权限的开启事件(在没有返回按钮的安卓上 无法返回到应用 进而无法触发权限回调)
+
 ## Usage
 
 Add dependency to pubspec.yaml file

@@ -13,11 +13,16 @@ class FlutterOverlayApps {
   static const MethodChannel _channel = MethodChannel(_mainAppMethodChannel);
 
   // overlay methodChanel
-  static const MethodChannel _overlayChannel =
-      MethodChannel(_overlayAppMethodChannel);
+  static const MethodChannel _overlayChannel = MethodChannel(_overlayAppMethodChannel);
   //Overlay BasicMessageChannel
-  static const BasicMessageChannel _overlayMessageChannel =
-      BasicMessageChannel(_overlayAppMessageChannel, JSONMessageCodec());
+  static const BasicMessageChannel _overlayMessageChannel = BasicMessageChannel(_overlayAppMessageChannel, JSONMessageCodec());
+
+  static Future<bool> checkPermission() async{
+    return await _channel.invokeMethod('checkPermission');
+  }
+  static Future<bool> requestPermission() async{
+    return await _channel.invokeMethod('requestPermission');
+  }
 
   /// Open overLay content
   /// Takes optional;
