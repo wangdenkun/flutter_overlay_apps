@@ -169,7 +169,6 @@ class FlutterOverlayAppsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
             }
             true
         } else {
-            replyPermissionResult(false)
             false
         }
     }
