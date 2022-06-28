@@ -25,7 +25,7 @@ import java.util.*
 const val mainAppMethodChannel: String = "com.phan_tech./flutter_overlay_apps"
 const val overlayAppMethodChannel: String = "com.phan_tech/flutter_overlay_apps/overlay"
 const val overlayAppMessageChannel: String = "com.phan_tech/flutter_overlay_apps/overlay/messenger"
-const val OVERLAY_PERMISSION_REQUEST_CODE = 1;
+const val OVERLAY_PERMISSION_REQUEST_CODE = 267;
 
 /** FlutterOverlayAppsPlugin */
 class FlutterOverlayAppsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener, BasicMessageChannel.MessageHandler<Any?> {
