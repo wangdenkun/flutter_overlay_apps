@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import io.flutter.embedding.android.FlutterView
+import io.flutter.embedding.android.*
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.JSONMessageCodec
@@ -32,9 +32,11 @@ class OverlayService : Service() {
         val engine = FlutterEngineCache.getInstance().get("my_engine_id")!!
         engine.lifecycleChannel.appIsResumed()
 
-        flutterView = FlutterView(applicationContext)
+//        flutterView = FlutterView(applicationContext)
+        flutterView = FlutterView(applicationContext, FlutterTextureView(applicationContext))
 
         flutterView.attachToFlutterEngine(FlutterEngineCache.getInstance().get("my_engine_id")!!)
+        FlutterFragment.withCachedEngine("my_engine_id").renderMode(RenderMode.surface).transparencyMode(TransparencyMode.transparent)
         flutterView.fitsSystemWindows = true
 
         flutterChannel.setMethodCallHandler{ methodCall: MethodCall, result: MethodChannel.Result ->

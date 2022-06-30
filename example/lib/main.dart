@@ -10,7 +10,13 @@ void main() {
 // overlay entry point
 @pragma("vm:entry-point")
 void showOverlay() {
-  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: MyOverlaContent()));
+  runApp(
+    const MaterialApp(
+      // color: Colors.transparent,
+      debugShowCheckedModeBanner: false,
+      home: MyOverlaContent(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -21,20 +27,34 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   List<String> _debugInfoList = [];
+  StreamSubscription? _overlayListener;
+
   @override
   void initState() {
     super.initState();
+    _overlayListener = FlutterOverlayApps.overlayListener().listen((event) {
+      debugPrint('---> _MyAppState.initState overlayListener event: ${event}');
+      _debugInfoList.add(event.toString());
+      setState((){});
+    });
+  }
+
+  @override
+  void dispose() {
+    _overlayListener?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: Colors.blue,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
+        backgroundColor: Colors.white,
         body: Center(
           child: SingleChildScrollView(
             child: Column(
@@ -42,10 +62,8 @@ class _MyAppState extends State<MyApp> {
                 ElevatedButton(
                   onPressed: () async {
                     var res = await FlutterOverlayApps.checkPermission();
-                    _debugInfoList.add( res ? 'has Permission' : 'no Permission');
-                    setState((){
-
-                    });
+                    _debugInfoList.add(res ? 'has Permission' : 'no Permission');
+                    setState(() {});
                   },
                   child: const Text("checkPermission"),
                 ),
@@ -54,16 +72,15 @@ class _MyAppState extends State<MyApp> {
                     var resOfRequest = await FlutterOverlayApps.requestPermission();
                     debugPrint('---> _MyAppState.build resOfRequest: ${resOfRequest}');
                     _debugInfoList.add('requestPermission: $resOfRequest');
-                    setState((){
-
-                    });
+                    setState(() {});
                   },
                   child: const Text("requestPermission"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     // Open overlay
-                    await FlutterOverlayApps.showOverlay(height: 300, width: 400, alignment: OverlayAlignment.center);
+                    // await FlutterOverlayApps.showOverlay(height: 300, width: 400, alignment: OverlayAlignment.center);
+                    await FlutterOverlayApps.showOverlay();
                     // send data to ovelay
                     await Future.delayed(const Duration(seconds: 2));
                     FlutterOverlayApps.sendDataToAndFromOverlay("Hello from main app");
@@ -104,21 +121,40 @@ class _MyOverlaContentState extends State<MyOverlaContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: InkWell(
-        onTap: () {
-          // close overlay
-          FlutterOverlayApps.closeOverlay();
-        },
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+    return Scaffold(
+      backgroundColor: Colors.red.withOpacity(0.4),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Text(
+                    _dataFromApp,
+                  ),
+                ),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  FlutterOverlayApps.sendDataToAndFromOverlay("Hello from Sub App");
+                },
+                child: const Text(
+                  'Send Message From Sub App',
+                ),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  FlutterOverlayApps.closeOverlay();
+                },
+                child: const Text(
+                  'Close',
+                ),
+              ),
+            ],
           ),
-          child: Center(
-              child: Text(
-            _dataFromApp,
-            style: const TextStyle(color: Colors.red),
-          )),
         ),
       ),
     );
