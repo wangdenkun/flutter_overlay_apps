@@ -1,10 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
 
 void main() {
   runApp(const MyApp());
+  if (Platform.isAndroid) {
+    // 设置状态栏背景及颜色
+    SystemUiOverlayStyle systemUiOverlayStyle =
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []); //隐藏状态栏
+  }
 }
 
 // overlay entry point
@@ -17,6 +27,13 @@ void showOverlay() {
       home: MyOverlaContent(),
     ),
   );
+  if (Platform.isAndroid) {
+    // 设置状态栏背景及颜色
+    SystemUiOverlayStyle systemUiOverlayStyle =
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []); //隐藏状态栏
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -122,7 +139,8 @@ class _MyOverlaContentState extends State<MyOverlaContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red.withOpacity(0.4),
+      // backgroundColor: Colors.red.withOpacity(0.4),
+      backgroundColor: Colors.red,
       body: Center(
         child: SingleChildScrollView(
           child: Column(

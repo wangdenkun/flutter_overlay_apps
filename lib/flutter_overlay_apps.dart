@@ -4,23 +4,21 @@ import 'package:flutter/services.dart';
 
 const int overlaySizeFill = -1;
 const String _mainAppMethodChannel = "com.phan_tech./flutter_overlay_apps";
-const String _overlayAppMethodChannel =
-    "com.phan_tech/flutter_overlay_apps/overlay";
-const String _overlayAppMessageChannel =
-    "com.phan_tech/flutter_overlay_apps/overlay/messenger";
+const String _overlayAppMethodChannel = "com.phan_tech/flutter_overlay_apps/overlay";
+const String _overlayAppMessageChannel = "com.phan_tech/flutter_overlay_apps/overlay/messenger";
 
 class FlutterOverlayApps {
   static const MethodChannel _channel = MethodChannel(_mainAppMethodChannel);
-
   // overlay methodChanel
   static const MethodChannel _overlayChannel = MethodChannel(_overlayAppMethodChannel);
   //Overlay BasicMessageChannel
   static const BasicMessageChannel _overlayMessageChannel = BasicMessageChannel(_overlayAppMessageChannel, JSONMessageCodec());
 
-  static Future<bool> checkPermission() async{
+  static Future<bool> checkPermission() async {
     return await _channel.invokeMethod('checkPermission');
   }
-  static Future<bool> requestPermission() async{
+
+  static Future<bool> requestPermission() async {
     return await _channel.invokeMethod('requestPermission');
   }
 
@@ -29,12 +27,8 @@ class FlutterOverlayApps {
   ///   - int [height] default is [overlaySizeFill]
   ///   - int [width] default is [overlaySizeFill]
   ///   - OverlayAlignment [width] default is [alignment] [OverlayAlignment.center]
-  static Future<bool?> showOverlay(
-      {int height = overlaySizeFill,
-      int width = overlaySizeFill,
-      OverlayAlignment alignment = OverlayAlignment.center}) async {
-    final bool? _res = await _channel.invokeMethod('showOverlay',
-        {"height": height, "width": width, "alignment": alignment.name});
+  static Future<bool?> showOverlay({int height = overlaySizeFill, int width = overlaySizeFill, OverlayAlignment alignment = OverlayAlignment.center}) async {
+    final bool? _res = await _channel.invokeMethod('showOverlay', {"height": height, "width": width, "alignment": alignment.name});
     return _res;
   }
 
@@ -55,6 +49,7 @@ class FlutterOverlayApps {
 
   /// Streams message shared between overlay and main app
   static final StreamController _controller = StreamController();
+
   static Stream<dynamic> overlayListener() {
     _overlayMessageChannel.setMessageHandler((message) async {
       _controller.add(message);
@@ -70,14 +65,4 @@ class FlutterOverlayApps {
 }
 
 /// Overlay alignment on screen
-enum OverlayAlignment {
-  topLeft,
-  topCenter,
-  topRight,
-  centerLeft,
-  center,
-  centerRight,
-  bottomLeft,
-  bottomCenter,
-  bottomRight
-}
+enum OverlayAlignment { topLeft, topCenter, topRight, centerLeft, center, centerRight, bottomLeft, bottomCenter, bottomRight }

@@ -35,6 +35,15 @@ class FlutterOverlayAppsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
     private lateinit var activity: Activity
     private var permissionResult: Result? = null
 
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, mainAppMethodChannel)
+        channel.setMethodCallHandler(this)
+
+        messenger = BasicMessageChannel(flutterPluginBinding.binaryMessenger, overlayAppMessageChannel, JSONMessageCodec.INSTANCE)
+        messenger.setMessageHandler(this)
+        this.context = flutterPluginBinding.applicationContext
+
+    }
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
@@ -64,17 +73,6 @@ class FlutterOverlayAppsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware
 
     override fun onDetachedFromActivity() {
     }
-
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, mainAppMethodChannel)
-        channel.setMethodCallHandler(this)
-
-        messenger = BasicMessageChannel(flutterPluginBinding.binaryMessenger, overlayAppMessageChannel, JSONMessageCodec.INSTANCE)
-        messenger.setMessageHandler(this)
-        this.context = flutterPluginBinding.applicationContext
-
-    }
-
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
