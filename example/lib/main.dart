@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:bundle_id_launch/bundle_id_launch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'package:flutter_overlay_apps/flutter_overlay_apps.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,8 +57,18 @@ class _MyAppState extends State<MyApp> {
       _debugInfoList.add(event.toString());
       setState((){});
     });
+    _prepare();
   }
 
+  late PackageInfo _packageInfo;
+  Future<bool> _prepare() async{
+    _packageInfo = await PackageInfo.fromPlatform();
+    return true;
+  }
+  Future<bool> _launchSelf() async{
+    var packageBundleId = _packageInfo.packageName;
+    return BundleIdLaunch.launch(bundleId: packageBundleId);
+  }
   @override
   void dispose() {
     _overlayListener?.cancel();
@@ -88,6 +100,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     var resOfRequest = await FlutterOverlayApps.requestPermission();
                     debugPrint('---> _MyAppState.build resOfRequest: ${resOfRequest}');
+                    if (resOfRequest) _launchSelf();
                     _debugInfoList.add('requestPermission: $resOfRequest');
                     setState(() {});
                   },
